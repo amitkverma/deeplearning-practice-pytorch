@@ -70,7 +70,7 @@ class NiN(nn.Module):
         x = self.classifier(x)
         return x
         
-model = NiN(3, 10)
+model = NiN(3, 10).to(device)
 helper.model_summary(model, input_shape)
 
 
