@@ -13,10 +13,7 @@ import time
 # Process the text data
 # ---------------------
 # Download data -> Tokenize -> Build Vocab -> Numericalize -> Create DataLoader
-
-
-
-def load_dataset_text_data(dataset_name, batch_size=64, tokenizer_type="basic_english", use_pretrained_vectors=False, use_padded_sequence=False):
+def load_dataset_text_data(dataset_name, batch_size=64, tokenizer_type="basic_english", pretrained_vectors=None):
     device = get_device()
     train_dataset, test_dataset = datasets.DATASETS[dataset_name]()
     train_dataset, test_dataset = to_map_style_dataset(train_dataset), to_map_style_dataset(test_dataset)
@@ -34,29 +31,21 @@ def load_dataset_text_data(dataset_name, batch_size=64, tokenizer_type="basic_en
             yield tokenizer(text)
     
     # Build the vocabulary
-    vocab = build_vocab_from_iterator(tokenize_dataset(train_dataset), min_freq=1, specials=["<unk>", "<pad>"])
-    vocab.set_default_index(vocab["<unk>"])
-    
-    if use_pretrained_vectors:
-        from torchtext.vocab import GloVe
-        vocab.load_vectors(GloVe(name='6B', dim=100))
-
-    if use_padded_sequence:
-        def collate_batch(batch):
-            Y, X = list(zip(*batch))
-            Y = torch.tensor(Y) - 1
-            X = [vocab(tokenizer(text)) for text in X]
-            X = [torch.tensor(tokens) for tokens in X]
-            X = pad_sequence(X, batch_first=True)
-            return X.to(device), Y.to(device)
+    if pretrained_vectors:
+        from torchtext.vocab import vocab as vocab_class
+        vocab = vocab_class(pretrained_vectors.stoi, specials=["<unk>", "<pad>"])
+        vocab.set_default_index(vocab["<unk>"])
     else:
-        def collate_batch(batch):
-            max_word_length = 50
-            Y, X = list(zip(*batch))
-            Y = torch.tensor(Y) - 1
-            X = [vocab(tokenizer(text)) for text in X]
-            X = [tokens + [0]* (max_word_length - len(tokens)) if len(tokens) < max_word_length else tokens[:max_word_length] for tokens in X]
-            return torch.tensor(X, dtype=torch.int32).to(device), Y.to(device)
+        vocab = build_vocab_from_iterator(tokenize_dataset(train_dataset), min_freq=1, specials=["<unk>", "<pad>"])
+        vocab.set_default_index(vocab["<unk>"])
+
+    def collate_batch(batch):
+        max_word_length = 50
+        Y, X = list(zip(*batch))
+        Y = torch.tensor(Y) - 1
+        X = [vocab(tokenizer(text)) for text in X]
+        X = [tokens + [0]* (max_word_length - len(tokens)) if len(tokens) < max_word_length else tokens[:max_word_length] for tokens in X]
+        return torch.tensor(X, dtype=torch.int32).to(device), Y.to(device)
         
     train_loader = DataLoader(
         split_train_, batch_size=batch_size, shuffle=True, collate_fn=collate_batch
