@@ -15,7 +15,8 @@ import time
 # Download data -> Tokenize -> Build Vocab -> Numericalize -> Create DataLoader
 
 
-def load_dataset_text_data(dataset_name, batch_size=64, tokenizer_type="basic_english"):
+
+def load_dataset_text_data(dataset_name, batch_size=64, tokenizer_type="basic_english", use_pretrained_vectors=False, use_padded_sequence=False):
     device = get_device()
     train_dataset, test_dataset = datasets.DATASETS[dataset_name]()
     train_dataset, test_dataset = to_map_style_dataset(train_dataset), to_map_style_dataset(test_dataset)
@@ -33,18 +34,30 @@ def load_dataset_text_data(dataset_name, batch_size=64, tokenizer_type="basic_en
             yield tokenizer(text)
     
     # Build the vocabulary
-    vocab = build_vocab_from_iterator(tokenize_dataset(train_dataset), min_freq=1, specials=["<unk>"])
+    vocab = build_vocab_from_iterator(tokenize_dataset(train_dataset), min_freq=1, specials=["<unk>", "<pad>"])
     vocab.set_default_index(vocab["<unk>"])
+    
+    if use_pretrained_vectors:
+        from torchtext.vocab import GloVe
+        vocab.load_vectors(GloVe(name='6B', dim=100))
 
-    max_word_length = 50
-    
-    def collate_batch(batch):
-        Y, X = list(zip(*batch))
-        Y = torch.tensor(Y) - 1
-        X = [vocab(tokenizer(text)) for text in X]
-        X = [tokens + [0]* (max_word_length - len(tokens)) if len(tokens) < max_word_length else tokens[:max_word_length] for tokens in X]
-        return torch.tensor(X, dtype=torch.int32).to(device), Y.to(device)
-    
+    if use_padded_sequence:
+        def collate_batch(batch):
+            Y, X = list(zip(*batch))
+            Y = torch.tensor(Y) - 1
+            X = [vocab(tokenizer(text)) for text in X]
+            X = [torch.tensor(tokens) for tokens in X]
+            X = pad_sequence(X, batch_first=True)
+            return X.to(device), Y.to(device)
+    else:
+        def collate_batch(batch):
+            max_word_length = 50
+            Y, X = list(zip(*batch))
+            Y = torch.tensor(Y) - 1
+            X = [vocab(tokenizer(text)) for text in X]
+            X = [tokens + [0]* (max_word_length - len(tokens)) if len(tokens) < max_word_length else tokens[:max_word_length] for tokens in X]
+            return torch.tensor(X, dtype=torch.int32).to(device), Y.to(device)
+        
     train_loader = DataLoader(
         split_train_, batch_size=batch_size, shuffle=True, collate_fn=collate_batch
     )
@@ -57,11 +70,10 @@ def load_dataset_text_data(dataset_name, batch_size=64, tokenizer_type="basic_en
         test_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_batch
     )
     num_class = len(set([label for (label, text) in train_dataset]))
-    vocab_size = len(vocab)
     print("\nData Summary\n" + "-" * 50)
     print(f"Dataset: {dataset_name}")
     print(f"Number of classes: {num_class}")
-    print(f"Vocabulary Size: {vocab_size}")
+    print(f"Vocabulary Size: {len(vocab)}")
     print(f"Train Dataset Size: {len(split_train_)}")
     print(f"Validation Dataset Size: {len(split_valid_)}")
     print(f"Test Dataset Size: {len(test_dataset)}")
@@ -70,7 +82,7 @@ def load_dataset_text_data(dataset_name, batch_size=64, tokenizer_type="basic_en
     print(f"Input data shape: {next(iter(train_loader))[1].shape}")
     print(f"Output data shape: {next(iter(train_loader))[0].shape}")
     print(f"-" * 50)
-    return (train_loader, valid_loader, test_loader), num_class, vocab_size
+    return (train_loader, valid_loader, test_loader), num_class, vocab
     
 
 def get_device():
@@ -173,7 +185,7 @@ class Trainer:
         plt.xlabel("Batches")
         plt.ylabel("Loss")
         plt.legend()
-        plt.savefig(f"assets/losses/{name}_loss.png")
+        plt.savefig(f"artifacts/charts/{name}_loss.png")
         if show:
             plt.show()
 
@@ -189,6 +201,10 @@ class Trainer:
                 total_acc += (predicted_label.argmax(1) == label).sum().item()
                 total_count += label.size(0)
         print(f"Test Accuracy: {total_acc / total_count}")
+        
+    def save_model(self, name):
+        torch.save(self.model.state_dict(), f"artifacts/models/{name}.pth")
+        print(f"Model saved at artifacts/models/{name}.pth")
 
 
 def model_summary(model):
