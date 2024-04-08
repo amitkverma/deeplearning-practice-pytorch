@@ -16,7 +16,27 @@ I have implemented these models from scratch for learning and understanding purp
     - [ ] [ResNet](/cnn/7_resnet.py)
     - [ ] [DenseNet](/cnn/8_densenet.py)
 - [ ] [Recurrent Neural Network]() 
-    - [ ] [RNN]()
+    - [x] [RNN]()
+            - [ ] [RNN from scratch](/rnn/1_RNN.py)
+            - [x] [RNN using Pytorch](/rnn/rnn_simple.py)
+                    - RNN has 1 hidden state and 1 output state
+                    - RNN takes input and hidden state as input and gives output and hidden state as output
+                    - Sequences are fed one by one to RNN and hidden state is passed to next sequence
+            - [x] [Deep RNN](/rnn/rnn_advance.py)
+                    - Added Multiple layers in RNN - Stacking RNN layers top of each other
+                    - Bidirectional RNN - Helps in capturing context from both directions
+            - [x] [Optimized Training RNN](/rnn/rnn_advance.py)
+                    - Gradient Clipping - Helps in avoiding exploding gradients
+                    - Weight Initialization - Helps model to converge faster
+                    - Dropout Regularization - Helps in avoiding overfitting
+                    - Pretrained Embeddings - Helps in learning better embeddings
+                    - Packed Sequence for variable length sequences - Helps in handling less padded sequences efficiently
+            - [x] [LSTM using Pytorch]()
+                    - LSTM has 3 gates - Forget, Input, Output
+                    - LSTM has 2 states - Cell state, Hidden state
+                    - LSTM helps in capturing long term dependencies
+                    - LSTM helps in avoiding vanishing gradients
+                    - LSTM converges faster than RNN
     - [ ] [LSTM]()
     - [ ] [GRU]()
 - [ ] [Sequence to Sequence]()
