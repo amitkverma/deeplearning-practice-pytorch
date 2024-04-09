@@ -26,36 +26,39 @@ I have implemented these models from scratch for learning and understanding purp
         - ResNet provides understanding of Residual block which helps in avoiding vanishing gradients and helps in training deeper networks
 - [x] [Recurrent Neural Network]() 
     - [x] [RNN](/rnn/)
-        - [ ] [RNN from scratch](/rnn/1_RNN.py)            
+        - [x] [RNN from scratch](/rnn/01_rnn_scratch.py)            
             - RNN provides way to capture sequential information using self-attention
-        - [x] [RNN using Pytorch](/rnn/rnn_simple.py)
+        - [x] [RNN using Pytorch](/rnn/02_rnn_simple.py)
             - RNN has 1 hidden state and 1 output state
             - RNN takes input and hidden state as input and gives output and hidden state as output
             - Sequences are fed one by one to RNN and hidden state is passed to next sequence
-        - [x] [Deep RNN](/rnn/rnn_advance.py)
+            - Gradient clipping is used to avoid exploding gradients (nn.utils.clip_grad_norm_)
+        - [x] [Deep RNN](/rnn/03_rnn_complex.py)
             - Added Multiple layers in RNN - Stacking RNN layers top of each other
             - Bidirectional RNN - Helps in capturing context from both directions
-        - [x] [Optimized Training RNN](/rnn/rnn_advance.py)
+        - [x] [Optimized Training RNN](/rnn/04_rnn_tunned.py)
             - Gradient Clipping - Helps in avoiding exploding gradients
             - Weight Initialization - Helps model to converge faster
             - Dropout Regularization - Helps in avoiding overfitting
             - Pretrained Embeddings - Helps in learning better embeddings
             - Packed Sequence for variable length sequences - Helps in handling less padded sequences efficiently
-    - [x] [Optimized Training LSTM](/rnn/lstm_tuned.py)
+    - [x] [Optimized Training LSTM](/rnn/05_lstm.py)
         - LSTM has 3 gates - Forget, Input, Output
         - LSTM has 2 states - Cell state, Hidden state
         - LSTM helps in capturing long term dependencies
         - LSTM helps in avoiding vanishing gradients
         - LSTM converges faster than RNN
-    - [x] [GRU](/rnn/gru_tuned.py)
+    - [x] [GRU](/rnn/06_gru.py)
         - GRU has 2 gates - Reset, Update
         - GRU has 1 state - Hidden state
         - GRU helps in capturing long term dependencies
         - GRU helps in avoiding vanishing gradients
         - GRU converges faster than RNN
         - GRU and LSTM are similar in performance but GRU has less parameters
-- [ ] [Sequence to Sequence]()
-    - [ ] [Simple Seq2Seq]()
+- [ ] [Sequence to Sequence](/seq2seq/)
+    - [x] [Simple Seq2Seq](/seq2seq//01_seq2seq.py)
+        - Simple Seq2Seq model with RNN encoder and RNN decoder
+        - Used teacher forcing to train the model
     - [ ] [Attention Seq2Seq]()
 - [ ] [Transformer]()
     - [ ] [BERT]()

@@ -16,6 +16,10 @@ Architecture:
 3. The bidirectional RNN layer processes the sequence data in both directions and passes the output to the linear layer.
 4. The linear layer produces the output logits.
 
+Conclusion:
+1. Bidirectional RNNs are useful for capturing context from both directions.
+2. Multiple layers can help the model learn complex patterns in the data.
+
 """
 
 # Set the seed

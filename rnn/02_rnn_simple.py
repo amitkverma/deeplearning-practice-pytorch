@@ -16,6 +16,11 @@ Architecture:
 3. The RNN layer processes the sequence data and passes the output to the linear layer.
 4. The linear layer produces the output logits.
 
+Conclusion:
+1. RNNs are simple and effective for sequence data.
+2. They can be used for various applications like sentiment analysis, time series analysis, etc.
+3. They suffer from vanishing gradient problems and are slow to train.
+4. They are not suitable for long sequences due to the vanishing gradient problem.
 
 """
 

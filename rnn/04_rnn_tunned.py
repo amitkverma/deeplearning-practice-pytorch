@@ -18,6 +18,11 @@ Architecture:
 3. The bidirectional RNN layer processes the sequence data in both directions and passes the output to the linear layer.
 4. The linear layer produces the output logits.
 
+Conclusion:
+1. Using pretrained embeddings can improve the performance of the model.
+2. Using dropout can prevent overfitting and improve generalization.
+3. Using packed sequence can handle variable length sequences effectively.
+
 """
 
 # Set the seed
@@ -39,14 +44,21 @@ class RNNTunned(nn.Module):
     def __init__(self, vocab_size, embed_dim, hidden_dim, num_layers,num_class, vocab_embeddings):
         super(RNNTunned, self).__init__()
         self.embedding_layer = nn.Embedding.from_pretrained(vocab_embeddings, freeze=True)
-        self.lstm = nn.LSTM(input_size=embed_len, hidden_size=hidden_dim, batch_first=True, num_layers=num_layers, bidirectional=False, dropout=0.2)
-        self.linear = nn.Linear(hidden_dim, num_class)
+        self.rnn = nn.RNN(input_size=embed_len, hidden_size=hidden_dim, batch_first=True, num_layers=num_layers, bidirectional=True, dropout=0.2)
+        self.linear = nn.Linear(2* hidden_dim, num_class) # 2*hidden_dim because of bidirectional
         self.dropout = nn.Dropout(0.2)
 
     def forward(self, text):
+        #text = [sent len, batch size]
         embeddings = self.dropout(self.embedding_layer(text))
-        output, (hidden, carry) = self.lstm(embeddings)
-        out = self.linear(output[:,-1])
+        # embeddings = [sent len, batch size, embed dim]
+        output, hidden = self.rnn(embeddings)
+        # output shape: (batch_size, seq_len, hidden_dim) # contains hidden states for each time step
+        # hidden shape: (num_layers * num_directions, batch_size, hidden_dim) # contains hidden states for the last time step or final hidden states
+        hidden = self.dropout(torch.cat((hidden[-2,:,:], hidden[-1,:,:]), dim=1)) # Concatenating the hidden states of the last layer
+        # hidden shape: (batch_size, 2*hidden_dim)
+        out = self.linear(hidden.squeeze(0))
+        # out shape: (batch_size, num_class)
         return out
 
 
@@ -72,7 +84,7 @@ trainer.train(train_loader, valid_loader)
 
 trainer.test(test_loader)
 
-trainer.plot("LSTM Tunned (AG_NEWS)")
+trainer.plot("RNN Tunned (AG_NEWS)")
 
 # Console Output:
-# 88.7% accuracy on the test set after 20 epochs Maybe because model have more parameters and it is underfitted
+# 77% accuracy on the test set after 20 epochs Maybe because model have more parameters and it is underfitted

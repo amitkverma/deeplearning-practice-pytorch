@@ -18,6 +18,8 @@ Architecture:
 3. The bidirectional RNN layer processes the sequence data in both directions and passes the output to the linear layer.
 4. The linear layer produces the output logits.
 
+Conclusion:
+1. LSTM is an advanced RNN architecture that can capture long-term dependencies.
 """
 
 # Set the seed
@@ -39,13 +41,13 @@ class RNNTunned(nn.Module):
     def __init__(self, vocab_size, embed_dim, hidden_dim, num_layers,num_class, vocab_embeddings):
         super(RNNTunned, self).__init__()
         self.embedding_layer = nn.Embedding.from_pretrained(vocab_embeddings, freeze=True)
-        self.gru = nn.GRU(input_size=embed_len, hidden_size=hidden_dim, batch_first=True, num_layers=num_layers, bidirectional=False, dropout=0.2)
+        self.lstm = nn.LSTM(input_size=embed_len, hidden_size=hidden_dim, batch_first=True, num_layers=num_layers, bidirectional=False, dropout=0.2)
         self.linear = nn.Linear(hidden_dim, num_class)
         self.dropout = nn.Dropout(0.2)
 
     def forward(self, text):
         embeddings = self.dropout(self.embedding_layer(text))
-        output, hidden = self.gru(embeddings)
+        output, (hidden, carry) = self.lstm(embeddings)
         out = self.linear(output[:,-1])
         return out
 
@@ -72,7 +74,7 @@ trainer.train(train_loader, valid_loader)
 
 trainer.test(test_loader)
 
-trainer.plot("GRU Tunned (AG_NEWS)")
+trainer.plot("LSTM Tunned (AG_NEWS)")
 
 # Console Output:
-# 89.4% accuracy on the test set after 20 epochs Maybe because model have more parameters and it is underfitted
+# 88.7% accuracy on the test set after 20 epochs Maybe because model have more parameters and it is underfitted
