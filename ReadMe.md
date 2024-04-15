@@ -64,12 +64,12 @@ I have implemented these models from scratch for learning and understanding purp
     - [x] [NMT Jointly Learning to Align and Translate](/seq2seq/03_seq2seq_nmt_jointly_learning_to_align.py)
         - Using attention mechanism to align source and target sequences 
 - [ ] [Transformer](/transformers/)
-        - [x] [Introduction to HuggingFace Transformers](./transformers/01_introduction_to_transformers.py)
-        - [x] [Inside of the HuggingFace pipeline API](./transformers/02_inside_of_pipeline_api.py)
-        - [x] [Tokenizers in HuggingFace Transformers](./transformers/03_tokenizers_in_huggingface_transformers.py)
-        - [x] [Embeddings in Transformers](./transformers/04_embeddings_in_transformers.py)
-        - [x] [Fine-tuning a pre-trained model with HuggingFace Transformers](./transformers/05_finetune_transformers.py)
-        - [ ] [Training a custom model with HuggingFace Transformers]()
+    - [x] [Introduction to HuggingFace Transformers](./transformers/01_introduction_to_transformers.py)
+    - [x] [Inside of the HuggingFace pipeline API](./transformers/02_inside_of_pipeline_api.py)
+    - [x] [Tokenizers in HuggingFace Transformers](./transformers/03_tokenizers_in_huggingface_transformers.py)
+    - [x] [Embeddings in Transformers](./transformers/04_embeddings_in_transformers.py)
+    - [x] [Fine-tuning a pre-trained model with HuggingFace Transformers](./transformers/05_finetune_transformers.py)
+    - [ ] [Training a custom model with HuggingFace Transformers]()
 
 
 ## Installation
