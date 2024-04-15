@@ -18,11 +18,16 @@ We will be implementing common Seq2Seq architectures from scratch using PyTorch 
     - Simple Seq2Seq model with RNN encoder and RNN decoder
     - Used teacher forcing to train the model
 
+    ![Simple Seq2Seq](/assets/images/seq2seq1.png)
 - [x] [Learning Phrase Representations](/src/seq2seq/02_seq2seq_learning_phrase_representations.py)
     - In Previous implementation, we used the last hidden state of the encoder as the initial hidden state of the decoder.
 One of the major drawbacks of this approach is that decoder might not be able to use the information from the encoder effectively when the input sequence is long.
 In this implementation, we will use encoder's last hidden state with input and output sequences. So, the decoder can use the information from the encoder effectively.
 
+    ![Simple Seq2Seq](/assets/images/seq2seq7.png)
 - [x] [NMT Jointly Learning to Align and Translate](/src/seq2seq/03_seq2seq_nmt_jointly_learning_to_align.py)
     - In previous implementation, we used the last hidden state of the encoder to concatenate with the decoder's hidden state to predict the next word. 
 Instead of using the last hidden state of the encoder, we will use the attention mechanism to align the input and output sequences.
+
+    ![Encoder](/assets/images/seq2seq9.png)
+    ![Decoder](/assets/images/seq2seq10.png)

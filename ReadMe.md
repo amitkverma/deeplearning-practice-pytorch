@@ -1,6 +1,5 @@
 # Pytorch implementation of DeepLearning models
-Implementing DL models using Pytorch for learning purposes. This repository contains the implementation of various deep learning models using Pytorch. The models are implemented from scratch and using Pytorch's built-in modules. The repository is organized in such a way that each model is implemented in a separate file. The models are implemented in a way that they can be easily understood and modified. The repository is intended for learning purposes and can be used as a reference for implementing deep learning models using Pytorch.
-
+This repository features various deep learning models implemented in PyTorch, both from scratch and with built-in modules. Each model is in a separate file for easy understanding and modification. It serves as a learning resource and reference for developing deep learning models with PyTorch.
 
 ## Models
 - [x] [Basics of tensors](/src/basics)
