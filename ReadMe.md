@@ -46,7 +46,7 @@ This repository features various deep learning models implemented in PyTorch, bo
     - [ ] [Custom Image Dataset in pytorch]()
     - [ ] [Custom text Dataset in pytorch]()
     - [ ] [Transformers datasets in pytorch]()
-- [ ] [Techniques]
+- [ ] [Techniques]()
     - [ ] [Learning Rate finder]()
     - [ ] [Early Stopping]()
     - [ ] [Model Checkpointing]()

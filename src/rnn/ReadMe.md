@@ -13,11 +13,11 @@ Recurrent Neural Networks (RNNs) are a type of neural network that is designed t
 ### Implementations
 We will be implementing common RNN architectures from scratch using PyTorch for sentiment analysis tasks.
 
-- [x] [RNN from scratch](/rnn/01_rnn_scratch.py)
+- [x] [RNN from scratch](/src/rnn/01_rnn_scratch.py)
     - RNN provides way to capture sequential information using self-attention
 
     ![RNN](/assets/images/rnn.svg)
-- [x] [RNN using Pytorch](/rnn/02_rnn_simple.py)
+- [x] [RNN using Pytorch](/src/rnn/02_rnn_simple.py)
     - RNN has 1 hidden state and 1 output state
     - RNN takes input and hidden state as input and gives output and hidden state as output
     - Sequences are fed one by one to RNN and hidden state is passed to next sequence
@@ -25,14 +25,14 @@ We will be implementing common RNN architectures from scratch using PyTorch for 
 
     ![RNN](/assets/images/rnn-train.svg)
 
-- [x] [Deep RNN](/rnn/03_rnn_complex.py)
+- [x] [Deep RNN](/src/rnn/03_rnn_complex.py)
     - Added Multiple layers in RNN - Stacking RNN layers top of each other
     - Bidirectional RNN - Helps in capturing context from both directions
 
-    ![Deep RNN](/assets/images/deep-rnn.svg)
+    ![Deep RNN](/src/assets/images/deep-rnn.svg)
     ![Bi-RNN](/assets/images/birnn.svg)
 
-- [x] [Optimized Training RNN](/rnn/04_rnn_tunned.py)
+- [x] [Optimized Training RNN](/src/rnn/04_rnn_tunned.py)
     - Gradient Clipping - Helps in avoiding exploding gradients
     - Weight Initialization - Helps model to converge faster
     - Dropout Regularization - Helps in avoiding overfitting
@@ -40,7 +40,7 @@ We will be implementing common RNN architectures from scratch using PyTorch for 
     - Packed Sequence for variable length sequences - Helps in handling less padded sequences efficiently
     
 
-- [x] [Optimized Training LSTM](/rnn/05_lstm.py)
+- [x] [Optimized Training LSTM](/src/rnn/05_lstm.py)
     - LSTM has 3 gates - Forget, Input, Output
     - LSTM has 2 states - Cell state, Hidden state
     - LSTM helps in capturing long term dependencies
@@ -49,7 +49,7 @@ We will be implementing common RNN architectures from scratch using PyTorch for 
 
     ![LSTM](/assets/images/lstm.svg)
 
-- [x] [GRU](/rnn/06_gru.py)
+- [x] [GRU](/src/rnn/06_gru.py)
     - GRU has 2 gates - Reset, Update
     - GRU has 1 state - Hidden state
     - GRU helps in capturing long term dependencies
