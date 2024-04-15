@@ -5,3 +5,5 @@ torchsummary
 torchtext
 datasets
 spacy
+transformers
+evaluate
