@@ -8,26 +8,48 @@ In this example, we will use the BERT model to get the embeddings of different w
 """
 
 from transformers import AutoTokenizer, AutoModel
+from datasets import load_dataset
 import torch
 
-# Load tokenizer and model
-tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-model = AutoModel.from_pretrained("bert-base-uncased")
+device = "cuda" if torch.cuda.is_available() else "cpu"
 
-# Encode some text
-tokens_king = tokenizer("king", return_tensors="pt")
-tokens_queen = tokenizer("queen", return_tensors="pt")
-tokens_transformer = tokenizer("transformer", return_tensors="pt")
+dataset = load_dataset("imdb", split="train")
+dataset = dataset.select(range(1))
+# Load the BERT model and tokenizer
+model_ckpt = "sentence-transformers/multi-qa-mpnet-base-dot-v1" # Good for sentence embeddings
+tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
+model = AutoModel.from_pretrained(model_ckpt).to(device)
 
-# Get embeddings
-with torch.no_grad():
-    king_embedding = model(**tokens_king).last_hidden_state[:, 0, :]
-    queen_embedding = model(**tokens_queen).last_hidden_state[:, 0, :]
-    transformer_embedding = model(**tokens_transformer).last_hidden_state[:, 0, :]
+# Using CLS pooling to get the sentence embeddings Where we collect the last hidden state for the special [CLS] token.
+def cls_pooling(model_output):
+    return model_output.last_hidden_state[:, 0]
 
-# Calculate the cosine similarity
-cosine_similarity = torch.nn.functional.cosine_similarity(king_embedding, queen_embedding, dim=1)
-print(f"Cosine similarity between 'king - queen': {cosine_similarity.item()}")
 
-cosine_similarity = torch.nn.functional.cosine_similarity(king_embedding, transformer_embedding, dim=1)
-print(f"Cosine similarity between 'king - transformer': {cosine_similarity.item()}")
+def get_embeddings(text_list):
+    encoded_input = tokenizer(
+        text_list, padding=True, truncation=True, return_tensors="pt"
+    )
+    encoded_input = {k: v.to(device) for k, v in encoded_input.items()}
+    model_output = model(**encoded_input)
+    return cls_pooling(model_output)
+
+text = ["I am walking in the park."]
+embedding = get_embeddings(text)
+print(embedding.shape)
+
+embedding_dataset = dataset.map(
+    lambda x: {"embeddings": get_embeddings(x["text"]).detach().cpu().numpy()[0]}
+)
+
+# Using FAISS for efficient similarity search
+
+embedding_dataset.add_faiss_index(column="embeddings")
+
+
+question = "How was godfather movie?"
+question_embedding = get_embeddings([question]).cpu().detach().numpy()
+question_embedding.shape
+
+scores, samples = embedding_dataset.get_nearest_examples(
+    "embeddings", question_embedding, k=5
+)
